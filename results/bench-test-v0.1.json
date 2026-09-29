@@ -1,0 +1,17 @@
+{
+  "params": "test",
+  "threads": 20,
+  "cache_mib": 1,
+  "dataset_mib": 4,
+  "cache_build_sec": 0.0104475,
+  "dataset_build_sec": 0.0298372,
+  "hashes_per_sec": 181566.80147612456,
+  "hash_latency_ms_single_thread": 0.07930000000000001,
+  "prefilter_us": 1.0262715,
+  "verify_fast_ms": 0,
+  "verify_light_ms": 1.283,
+  "dataset_item_read_ns": 5.27235,
+  "dataset_item_compute_ns": 5474.216,
+  "light_eval_penalty_x": 1038.2876705833262,
+  "full_verify_vs_prefilter_x": 0
+}

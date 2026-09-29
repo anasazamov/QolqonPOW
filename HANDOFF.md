@@ -66,11 +66,12 @@ v0.1 natijalari:
 - Yozilmay qolgan JIT'ga murojaatlar (`hs.jit`, `compile()`, `execute()`) olib tashlandi. VM faqat `exec` interpretatori bilan ishlaydi.
 - `pow/prefetch_other.go`: amd64 bo'lmagan platformalar uchun bo'sh `prefetch`.
 - `testdata/vectors_test_params.json` v0.2 uchun qayta yaratildi. `go vet` toza, 11/11 test o'tadi.
-- Hali qilinmagan: spetsifikatsiya hujjatini v0.2 ga yangilash, v0.2 benchmark va simulyatsiyalarni qayta ishlatish.
+- v0.2 benchmark (mainnet, 20 oqim): dataset 8.2 s, 2349 H/s, prefiltr 1.1 µs, to'liq tekshiruv 5.8 ms, light tekshiruv 91 ms, light-eval jarimasi 128x. v0.1 raqamlari `results/*-v0.1.json` da. Simulyatsiyalar v0.1 bilan bayt-bayt bir xil (hash funksiyasiga bog'liq emas).
+- Hali qilinmagan: spetsifikatsiya hujjatini v0.2 ga yangilash.
 
 ## Keyingi qadamlar
 1. **Kodni tiklash.** v0.1 ga qaytaring: `hs.jit`, `compile()`, `execute()` ni olib tashlab, `exec` ni to'g'ridan-to'g'ri chaqiring, dataset va hash tartibini v0.1 ga qaytaring. Yoki v0.2 o'zgarishlarini qoldirib, spetsifikatsiyani yangilang va test vektorlarini qayta yarating. So'ng `go vet ./...`, `go test ./pow/ -v`, `go run ./cmd/sim` ishlating.
-2. **`DATASET_PARENTS` bo'yicha qaror.** Light tekshiruv 192 ms oladi. Uni light-eval jarimasi bilan murosada hal qiling va o'lchab tekshiring.
+2. **`DATASET_PARENTS` bo'yicha qaror.** v0.2 da light tekshiruv 91 ms, jarima 128x. Uni light-eval jarimasi bilan murosada hal qiling va o'lchab tekshiring.
 3. **TMTO/pebbling tahlili.** Kesh va dataset qurilishi uchun: xotira necha marta kamaysa, hisoblash necha marta oshadi.
 4. **Blind-share'ning rasmiy tahlili.** Quyidagilarni ko'rib chiqing:
    - FAW va PAW;

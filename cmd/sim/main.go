@@ -1,4 +1,4 @@
-// sim вЂ” QalqonPoW yechimlarini eski yechimlar bilan solishtiruvchi simulyatsiyalar.
+// sim — QalqonPoW yechimlarini eski yechimlar bilan solishtiruvchi simulyatsiyalar.
 //
 //	go run ./cmd/sim
 package main
@@ -336,7 +336,7 @@ func timewarp() []twRow {
 		report(fmt.Sprintf("Bitcoin 2016-blok + time-warp (%.1f kunda)", t/86400), n, d)
 	}
 
-	// ASERT: foydali yagona yo'l вЂ” timestampni FTL chegarasida kelajakka qo'yish.
+	// ASERT: foydali yagona yo'l — timestampni FTL chegarasida kelajakka qo'yish.
 	for _, c := range []struct {
 		name     string
 		hl, ftl  float64

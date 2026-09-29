@@ -26,19 +26,19 @@ go run ./cmd/sim                                # results/simulations.json
 
 ## Natijalar (Intel Core Ultra 7 265KF, 20 oqim, Go 1.27)
 
-### Benchmark (mainnet parametrlari)
+### Benchmark (mainnet parametrlari, v0.2)
 
-| O'lchov | Qiymat |
-|---|---|
-| Kesh qurish (256 MiB) | 4.2 s |
-| Dataset qurish (2 GiB) | 17.6 s |
-| Mining tezligi | 1 831 H/s (bitta hash 10.9 ms) |
-| Prefiltr | 1.2 µs |
-| To'liq tekshiruv (dataset bilan) | 7.5 ms (prefiltrdan 6 226x qimmat) |
-| Light tekshiruv (faqat kesh) | 192 ms |
-| Dataset elementini o'qish / qayta hisoblash | 42 ns / 10 877 ns (saqlamaslik 258x qimmat) |
+| O'lchov | v0.2 | v0.1 |
+|---|---|---|
+| Kesh qurish (256 MiB) | 4.1 s | 4.2 s |
+| Dataset qurish (2 GiB) | 8.2 s | 17.6 s |
+| Mining tezligi | 2 349 H/s (bitta hash 8.2 ms) | 1 831 H/s (10.9 ms) |
+| Prefiltr | 1.1 µs | 1.2 µs |
+| To'liq tekshiruv (dataset bilan) | 5.8 ms (prefiltrdan 5 405x qimmat) | 7.5 ms |
+| Light tekshiruv (faqat kesh) | 91 ms | 192 ms |
+| Dataset elementini o'qish / qayta hisoblash | 37 ns / 4 747 ns (saqlamaslik 128x qimmat) | 42 ns / 10 877 ns (258x) |
 
-Mining tezligi interpretator bilan olingan. RandomX'dagi kabi JIT kompilyatsiya bilan bir necha barobar tezlashishi kutiladi.
+v0.2 da dataset elementi BLAKE3 o'rniga arzon ko'paytirish-aylantirish bilan aralashtiriladi (boshida va oxirida BLAKE3). Dataset manzili esa bir iteratsiya oldin prefetch qilinadi. Natijada light tekshiruv 2.1x, mining 1.28x tezlashdi, lekin light-eval jarimasi 258x dan 128x ga tushdi. Mining tezligi interpretator bilan olingan. v0.1 raqamlari `results/*-v0.1.json` da.
 
 ### 1. Block withholding (hujumchi 20%, pool 30%, 100 mln share)
 
@@ -72,7 +72,7 @@ Ideal holatda >10 daqiqalik bloklar 0.67% bo'ladi. Bu modelda ASERT SMA-144 dan 
 
 ## Topilgan kamchiliklar
 
-1. **Light tekshiruv qimmat: 192 ms.** Sababi `DATASET_PARENTS=32`. Bu light evaluation'ni 258 marta qimmatlashtiradi, lekin datasetsiz tekshiruvni ham sekinlashtiradi. To'liq node'lar va pool'lar 7.5 ms da tekshiradi. Variantlar: parents=16 (~95 ms) yoki yengil klientlar uchun faqat FlyClient.
+1. **Light tekshiruv va light-eval jarimasi o'rtasidagi murosa.** v0.2 da light tekshiruv 91 ms, jarima 128x (`DATASET_PARENTS=32`). Jarima CPU'da o'lchangan, maxsus apparat uchun u boshqacha bo'lishi mumkin. Qaror TMTO tahlilidan keyin qabul qilinadi. To'liq node'lar va pool'lar 5.8 ms da tekshiradi.
 2. **Mining interpretatorda ishlaydi.** Tijorat miner uchun x86-64 JIT kerak.
 3. **Spetsifikatsiyadan chetlanishlar.** Kesh Argon2d emas, BLAKE3 bilan ROMix uslubida quriladi: Go'da Argon2d ichki xotirasi ochiq emas. AES-4R o'rniga to'liq AES-128-CTR ishlatiladi.
 4. **Hali qilinmagan:** TMTO/pebbling tahlili, ASIC-narx modeli, mustaqil audit, ikkinchi implementatsiya, Stratum V2 pool.

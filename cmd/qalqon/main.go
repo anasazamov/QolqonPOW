@@ -1,4 +1,4 @@
-// qalqon вЂ” QalqonPoW uchun CLI: test vektorlari va benchmark.
+// qalqon — QalqonPoW uchun CLI: test vektorlari va benchmark.
 //
 //	go run ./cmd/qalqon vectors
 //	go run ./cmd/qalqon bench -params mainnet -seconds 20
@@ -94,7 +94,7 @@ func bench(args []string) {
 		p = pow.Test
 	}
 	res := benchResult{Params: p.Name, Threads: *threads, CacheMiB: p.CacheBytes >> 20, DatasetMiB: p.DatasetBytes >> 20}
-	fmt.Printf("QalqonPoW benchmark вЂ” parametrlar: %s, oqimlar: %d\n\n", p.Name, *threads)
+	fmt.Printf("QalqonPoW benchmark — parametrlar: %s, oqimlar: %d\n\n", p.Name, *threads)
 
 	t0 := time.Now()
 	cache := pow.NewCache(pow.H256("bench-epoch-key"), p)
@@ -169,7 +169,7 @@ func bench(args []string) {
 	}
 	res.VerifyLightMs = float64(time.Since(t0).Nanoseconds()) / 1e6 / vl
 	res.PrefilterVsFullX = res.VerifyFastMs * 1000 / res.PrefilterUs
-	fmt.Printf("Prefiltr (arzon tekshiruv):  %.2f Вµs\n", res.PrefilterUs)
+	fmt.Printf("Prefiltr (arzon tekshiruv):  %.2f µs\n", res.PrefilterUs)
 	fmt.Printf("To'liq tekshiruv (dataset):  %.2f ms  -> prefiltrdan %.0fx qimmat\n", res.VerifyFastMs, res.PrefilterVsFullX)
 	fmt.Printf("Light tekshiruv (faqat kesh): %.2f ms\n", res.VerifyLightMs)
 
