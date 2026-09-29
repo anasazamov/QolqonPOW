@@ -103,7 +103,6 @@ func (hs *Hasher) HashSeed(seed [32]byte) (pow, mix [32]byte) {
 	// 3. Har bir nonce uchun yangi tasodifiy dasturlar.
 	for prog := 0; prog < p.Programs; prog++ {
 		genProgram(state, hs.prog, hs.pbuf)
-		hs.compile()
 		rA, rB, rC, rD := state[0]&7, state[1]&7, state[2]&7, state[3]&7
 		spMix := r[rA] ^ r[rB]
 		for it := 0; it < p.Iterations; it++ {
@@ -115,7 +114,7 @@ func (hs *Hasher) HashSeed(seed [32]byte) (pow, mix [32]byte) {
 			for i := uint64(0); i < 4; i++ {
 				f[i] = norm(float64(f[i] + float64(int32(ld64(base, a1+8*i)))))
 			}
-			hs.execute(&r, &f)
+			hs.exec(&r, &f)
 
 			// Dataset (v0.2): bu iteratsiyada ma manzili o'qiladi — u oldingi
 			// iteratsiyada hisoblangan va oldindan so'ralgan. Keyingi manzil

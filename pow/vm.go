@@ -101,22 +101,6 @@ func norm(x float64) float64 {
 	return math.Float64frombits(b&^(uint64(0x7FF)<<52) | e<<52)
 }
 
-// execute dasturni JIT (agar yoqilgan bo'lsa) yoki interpretator bilan bajaradi.
-func (hs *Hasher) execute(r *[8]uint64, f *[4]float64) {
-	if hs.jit != nil {
-		hs.jit.run(r, f, hs.sp)
-		return
-	}
-	hs.exec(r, f)
-}
-
-// compile — JIT yoqilgan bo'lsa, hozirgi dasturni mashina kodiga aylantiradi.
-func (hs *Hasher) compile() {
-	if hs.jit != nil {
-		hs.jit.compile(hs.prog, &hs.masks, hs.p.BranchBudget)
-	}
-}
-
 // exec dasturni bir marta bajaradi (referens interpretator). FP natijalari har safar aniq float64
 // ga o'giriladi, shuning uchun kompilyator FMA birlashtirishi mumkin emas.
 func (hs *Hasher) exec(r *[8]uint64, f *[4]float64) {

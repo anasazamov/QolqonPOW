@@ -58,12 +58,15 @@ v0.1 natijalari:
 - Time-warp, 30 kun: Bitcoin qoidasida 16 kunda 5 mln blok, ASERT'da 1.00x.
 - Coin-hopping: >10 daqiqalik bloklar Bitcoin qoidasida 9.29%, SMA-144 da 1.01%, Qalqon'da 0.77%.
 
-## HOZIRGI HOLAT: kod kompilyatsiya bo'lmaydi
-v0.1 dan keyin yarim qolgan o'zgarishlar kiritilgan:
-- `pow/hash.go` va `pow/vm.go` mavjud bo'lmagan `hs.jit` maydoniga va `compile()`/`execute()` ga murojaat qiladi. Kompilyatsiya shu sababli buziladi.
-- `pow/dataset.go` (dataset elementi funksiyasi) va `pow/hash.go` (dataset o'qish tartibi) o'zgargan. Shuning uchun hash natijalari v0.1 test vektorlariga mos kelmaydi.
-- Qo'shilgan fayllar: `pow/prefetch.go`, `pow/prefetch_amd64.s`, `pow/bench_mainnet_test.go`.
-- Keraksiz fayllar: `cpu.out`, `pow.test.exe`, `qalqon.exe`.
+## HOZIRGI HOLAT: v0.2, kod ishlaydi (2026-09-29)
+- Git: https://github.com/anasazamov/QolqonPOW (`main`).
+- v0.1 dataset kodi saqlanmagan edi, shuning uchun v0.2 qoldirildi:
+  - `pow/dataset.go`: dataset elementi `DatasetParents` ta zanjirli kesh murojaatidan hisoblanadi (DRAM kechikishiga bog'liq).
+  - `pow/hash.go`: dataset manzili bir iteratsiya oldin hisoblanib, prefetch qilinadi.
+- Yozilmay qolgan JIT'ga murojaatlar (`hs.jit`, `compile()`, `execute()`) olib tashlandi. VM faqat `exec` interpretatori bilan ishlaydi.
+- `pow/prefetch_other.go`: amd64 bo'lmagan platformalar uchun bo'sh `prefetch`.
+- `testdata/vectors_test_params.json` v0.2 uchun qayta yaratildi. `go vet` toza, 11/11 test o'tadi.
+- Hali qilinmagan: spetsifikatsiya hujjatini v0.2 ga yangilash, v0.2 benchmark va simulyatsiyalarni qayta ishlatish.
 
 ## Keyingi qadamlar
 1. **Kodni tiklash.** v0.1 ga qaytaring: `hs.jit`, `compile()`, `execute()` ni olib tashlab, `exec` ni to'g'ridan-to'g'ri chaqiring, dataset va hash tartibini v0.1 ga qaytaring. Yoki v0.2 o'zgarishlarini qoldirib, spetsifikatsiyani yangilang va test vektorlarini qayta yarating. So'ng `go vet ./...`, `go test ./pow/ -v`, `go run ./cmd/sim` ishlating.
