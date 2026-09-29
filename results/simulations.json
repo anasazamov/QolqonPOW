@@ -1,0 +1,182 @@
+{
+  "daa": [
+    {
+      "name": "Bitcoin (2016 blok)",
+      "mean_block_s": 204.15875192388424,
+      "std_block_s": 335.8967147123294,
+      "blocks_over_10min_pct": 9.289333333333333,
+      "worst_100_block_avg_min": 11.005030854124804,
+      "hopper_reward_per_hash_vs_steady": 2.287361983395622,
+      "hopper_on_time_pct": 4.754530172282587
+    },
+    {
+      "name": "SMA-144 (BCH 2017)",
+      "mean_block_s": 120.43170430676142,
+      "std_block_s": 130.5369409289123,
+      "blocks_over_10min_pct": 1.012,
+      "worst_100_block_avg_min": 2.9364265988383758,
+      "hopper_reward_per_hash_vs_steady": 1.0767673026031093,
+      "hopper_on_time_pct": 3.4719758266292415
+    },
+    {
+      "name": "ASERT 2 kun (BCH 2020)",
+      "mean_block_s": 119.98443192810014,
+      "std_block_s": 123.97616826076012,
+      "blocks_over_10min_pct": 0.7913333333333333,
+      "worst_100_block_avg_min": 2.9934111839916757,
+      "hopper_reward_per_hash_vs_steady": 0.9970719148953777,
+      "hopper_on_time_pct": 1.3876178468316323
+    },
+    {
+      "name": "ASERT 1 kun (Qalqon)",
+      "mean_block_s": 119.96751499648119,
+      "std_block_s": 123.6452360575037,
+      "blocks_over_10min_pct": 0.772,
+      "worst_100_block_avg_min": 3.130651891133771,
+      "hopper_reward_per_hash_vs_steady": 0.9895285213640761,
+      "hopper_on_time_pct": 1.460700026727537
+    }
+  ],
+  "timewarp": [
+    {
+      "name": "Bitcoin 2016-blok + time-warp (16.2 kunda)",
+      "blocks_in_30_days": 5000000,
+      "vs_honest_x": 231.4814814814815,
+      "final_difficulty_vs_start": 9.07491533387787e-127
+    },
+    {
+      "name": "ASERT, FTL=7200 s (Bitcoin FTL)",
+      "blocks_in_30_days": 21622,
+      "vs_honest_x": 1.0010185185185185,
+      "final_difficulty_vs_start": 0.9633038233645611
+    },
+    {
+      "name": "ASERT, FTL=360 s (Qalqon)",
+      "blocks_in_30_days": 21569,
+      "vs_honest_x": 0.9985648148148148,
+      "final_difficulty_vs_start": 0.9688302315677808
+    }
+  ],
+  "withholding": [
+    {
+      "mode": "klassik",
+      "infiltration_x": 0,
+      "withhold_w": 1,
+      "attacker_revenue_share": 0.20056855690942493,
+      "analytic": 0.2,
+      "gain_vs_honest_pct": 0.28427845471246105,
+      "honest_pool_member_revenue_per_hash": 0.998155985541289,
+      "blocks": 390814
+    },
+    {
+      "mode": "klassik",
+      "infiltration_x": 0.025,
+      "withhold_w": 1,
+      "attacker_revenue_share": 0.20293731161498674,
+      "analytic": 0.20315581854043396,
+      "gain_vs_honest_pct": 1.4686558074933576,
+      "honest_pool_member_revenue_per_hash": 0.9448187416701903,
+      "blocks": 381580
+    },
+    {
+      "mode": "klassik",
+      "infiltration_x": 0.05,
+      "withhold_w": 1,
+      "attacker_revenue_share": 0.20370880864572247,
+      "analytic": 0.20300751879699253,
+      "gain_vs_honest_pct": 1.8544043228612361,
+      "honest_pool_member_revenue_per_hash": 0.9036824839349243,
+      "blocks": 370080
+    },
+    {
+      "mode": "klassik",
+      "infiltration_x": 0.075,
+      "withhold_w": 1,
+      "attacker_revenue_share": 0.20072775077102453,
+      "analytic": 0.19999999999999996,
+      "gain_vs_honest_pct": 0.36387538551225784,
+      "honest_pool_member_revenue_per_hash": 0.8662448985898386,
+      "blocks": 361864
+    },
+    {
+      "mode": "klassik",
+      "infiltration_x": 0.1,
+      "withhold_w": 1,
+      "attacker_revenue_share": 0.194530236352189,
+      "analytic": 0.19444444444444445,
+      "gain_vs_honest_pct": -2.7348818239055106,
+      "honest_pool_member_revenue_per_hash": 0.8357395020375499,
+      "blocks": 351228
+    },
+    {
+      "mode": "klassik",
+      "infiltration_x": 0.15,
+      "withhold_w": 1,
+      "attacker_revenue_share": 0.1764684098323674,
+      "analytic": 0.17647058823529416,
+      "gain_vs_honest_pct": -11.765795083816311,
+      "honest_pool_member_revenue_per_hash": 0.7868282689565761,
+      "blocks": 332287
+    },
+    {
+      "mode": "blind",
+      "infiltration_x": 0.05,
+      "withhold_w": 0,
+      "attacker_revenue_share": 0.20002405887329303,
+      "analytic": 0.2,
+      "gain_vs_honest_pct": 0.012029436646510128,
+      "honest_pool_member_revenue_per_hash": 0.9973239821333909,
+      "blocks": 391013
+    },
+    {
+      "mode": "blind",
+      "infiltration_x": 0.05,
+      "withhold_w": 0.5,
+      "attacker_revenue_share": 0.18024237583802594,
+      "analytic": 0.17948717948717952,
+      "gain_vs_honest_pct": -9.878812080987032,
+      "honest_pool_member_revenue_per_hash": 1.0247377731419969,
+      "blocks": 380098
+    },
+    {
+      "mode": "blind",
+      "infiltration_x": 0.05,
+      "withhold_w": 1,
+      "attacker_revenue_share": 0.15860520463711306,
+      "analytic": 0.15789473684210528,
+      "gain_vs_honest_pct": -20.697397681443476,
+      "honest_pool_member_revenue_per_hash": 1.04956053679663,
+      "blocks": 371438
+    },
+    {
+      "mode": "blind",
+      "infiltration_x": 0.1,
+      "withhold_w": 0,
+      "attacker_revenue_share": 0.19929256246799598,
+      "analytic": 0.2,
+      "gain_vs_honest_pct": -0.35371876600200913,
+      "honest_pool_member_revenue_per_hash": 0.9996143212813995,
+      "blocks": 390577
+    },
+    {
+      "mode": "blind",
+      "infiltration_x": 0.1,
+      "withhold_w": 0.5,
+      "attacker_revenue_share": 0.1586267702991873,
+      "analytic": 0.15789473684210528,
+      "gain_vs_honest_pct": -20.68661485040636,
+      "honest_pool_member_revenue_per_hash": 1.050319838970284,
+      "blocks": 371728
+    },
+    {
+      "mode": "blind",
+      "infiltration_x": 0.1,
+      "withhold_w": 1,
+      "attacker_revenue_share": 0.11154987711087236,
+      "analytic": 0.11111111111111112,
+      "gain_vs_honest_pct": -44.22506144456383,
+      "honest_pool_member_revenue_per_hash": 1.104792628731204,
+      "blocks": 352757
+    }
+  ]
+}

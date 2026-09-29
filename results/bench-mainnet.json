@@ -1,0 +1,17 @@
+{
+  "params": "mainnet",
+  "threads": 20,
+  "cache_mib": 256,
+  "dataset_mib": 2048,
+  "cache_build_sec": 4.1960497,
+  "dataset_build_sec": 17.6098529,
+  "hashes_per_sec": 1831.1973387398284,
+  "hash_latency_ms_single_thread": 10.898959999999999,
+  "prefilter_us": 1.2044935,
+  "verify_fast_ms": 7.499565,
+  "verify_light_ms": 192.07454,
+  "dataset_item_read_ns": 42.19325,
+  "dataset_item_compute_ns": 10876.606,
+  "light_eval_penalty_x": 257.7807113697096,
+  "full_verify_vs_prefilter_x": 6226.322516476842
+}
