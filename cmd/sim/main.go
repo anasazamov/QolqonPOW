@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"sort"
 
-	"qalqon/pow"
+	"github.com/anasazamov/QolqonPOW/pow"
 )
 
 func main() {

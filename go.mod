@@ -1,4 +1,4 @@
-module qalqon
+module github.com/anasazamov/QolqonPOW
 
 go 1.27.0
 

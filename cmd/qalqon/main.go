@@ -17,7 +17,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"qalqon/pow"
+	"github.com/anasazamov/QolqonPOW/pow"
 )
 
 func main() {

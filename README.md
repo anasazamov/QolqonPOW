@@ -1,78 +1,100 @@
-# QalqonPoW — referens implementatsiya
+# QalqonPoW
 
-Yangi blockchain uchun proof-of-work algoritmi. Spetsifikatsiya: https://claude.ai/artifact/4a5shQAzBRYZioQSHcZ2jF
+[![CI](https://github.com/anasazamov/QolqonPOW/actions/workflows/ci.yml/badge.svg)](https://github.com/anasazamov/QolqonPOW/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## Tuzilishi
+**Open research on proof-of-work defences: block withholding, time-warp, difficulty
+oscillation and pool DoS. Includes a reference implementation and reproducible simulations.**
 
-| Fayl | Nima qiladi |
-|---|---|
-| `pow/params.go` | Mainnet va test parametrlari, dataset o'sishi, epoch kaliti |
-| `pow/dataset.go` | Epoch keshi (256 MiB, ma'lumotga bog'liq 3 o'tish) va dataset (2 GiB, 32 ta zanjirli ota) |
-| `pow/vm.go` | Tasodifiy dastur VM: 19 opcode, butun son, FP, xotira va shartli o'tish |
-| `pow/hash.go` | Seed, bitta hash, prefiltr, share va blok tekshiruvi |
-| `pow/consensus.go` | Blind-share, ASERT (aserti3-2d), timestamp qoidalari, fork tanlash, MMR |
-| `pow/pow_test.go` | Testlar va test vektorlari tekshiruvi |
-| `cmd/qalqon` | `vectors` va `bench` buyruqlari |
-| `cmd/sim` | Uchta simulyatsiya: block withholding, qiyinlik algoritmlari, time-warp |
+> **Status: research prototype. Not audited. Do not use in production.**
+> Most components are known ideas; see [PRIOR_ART.md](PRIOR_ART.md) for what is new and what is not.
 
-## Ishga tushirish
+Uzbek version: [README.uz.md](README.uz.md)
 
-```
-go test ./pow/ -v                               # 11 ta test
-go run ./cmd/qalqon vectors                     # testdata/vectors_test_params.json
-go run ./cmd/qalqon bench -params mainnet       # real parametrlar, ~2.5 GiB RAM
-go run ./cmd/sim                                # results/simulations.json
-```
+## Why
 
-## Natijalar (Intel Core Ultra 7 265KF, 20 oqim, Go 1.27)
+A PoW chain faces several problems at the same time, and each one has a known but scattered fix:
 
-### Benchmark (mainnet parametrlari, v0.2)
-
-| O'lchov | v0.2 | v0.1 |
+| Problem | Known countermeasure | Where here |
 |---|---|---|
-| Kesh qurish (256 MiB) | 4.1 s | 4.2 s |
-| Dataset qurish (2 GiB) | 8.2 s | 17.6 s |
-| Mining tezligi | 2 349 H/s (bitta hash 8.2 ms) | 1 831 H/s (10.9 ms) |
-| Prefiltr | 1.1 µs | 1.2 µs |
-| To'liq tekshiruv (dataset bilan) | 5.8 ms (prefiltrdan 5 405x qimmat) | 7.5 ms |
-| Light tekshiruv (faqat kesh) | 91 ms | 192 ms |
-| Dataset elementini o'qish / qayta hisoblash | 37 ns / 4 747 ns (saqlamaslik 128x qimmat) | 42 ns / 10 877 ns (258x) |
+| Block withholding inside pools (Eyal 2015, FAW: Kwon 2017) | Oblivious shares (Rosenfeld 2011) | `pow/consensus.go`: `BlindCommit`, `BlindOK` |
+| Time-warp and hash-rate oscillation | ASERT (aserti3-2d) + tight future-time limit | `NextTarget`, `ValidTimestamp` |
+| Pools flooded with invalid shares | Mix digest in the header, checked in ~1 µs (as in Ethash) | `Prefilter` |
+| Heavy light-client sync | MMR header commitment for FlyClient | `MMR` |
+| Cheap custom hardware | Memory-hard hash with random programs (Ethash/RandomX ideas) | `pow/dataset.go`, `pow/vm.go`, `pow/hash.go` |
 
-v0.2 da dataset elementi BLAKE3 o'rniga arzon ko'paytirish-aylantirish bilan aralashtiriladi (boshida va oxirida BLAKE3). Dataset manzili esa bir iteratsiya oldin prefetch qilinadi. Natijada light tekshiruv 2.1x, mining 1.28x tezlashdi, lekin light-eval jarimasi 258x dan 128x ga tushdi. Mining tezligi interpretator bilan olingan. v0.1 raqamlari `results/*-v0.1.json` da.
+This repository puts these countermeasures into one tested design and measures them.
 
-### 1. Block withholding (hujumchi 20%, pool 30%, 100 mln share)
+## Results so far
 
-| Rejim | Infiltratsiya | Hujumchi foydasi | Halol pool a'zosi (1 hash uchun) |
+All numbers come from `go run ./cmd/sim` and `go run ./cmd/qalqon bench`; raw data is in `results/`.
+
+**Block withholding** (attacker 20% of the network, pool 30%, 100M shares, Monte Carlo vs. closed form):
+
+| Mode | Infiltration x | Attacker gain vs. honest | Honest pool member, revenue per hash |
 |---|---|---|---|
-| Klassik PoW | 5% | **+1.85%** | 0.904 (10% zarar) |
-| Klassik PoW | 2.5% | +1.47% | 0.945 |
-| Blind-share, hammasini yashiradi | 5% | **−20.7%** | 1.050 |
-| Blind-share, yarmini yashiradi | 5% | −9.9% | 1.025 |
-| Blind-share, halol | 5% | 0.0% | 0.997 |
+| Classic PoW | 5% | **+1.85%** | 0.904 |
+| Oblivious shares, withhold all | 5% | **−20.7%** | 1.050 |
+| Oblivious shares, withhold half | 5% | −9.9% | 1.025 |
+| Oblivious shares, honest | 5% | 0.0% | 0.997 |
 
-Monte Carlo natijasi analitik formulaga mos keladi. Blind-share bilan hujumchi daromadi `(a − w·x)/(1 − w·x) ≤ a`, ya'ni har qanday yashirish strategiyasi faqat zarar keltiradi.
+With oblivious shares the attacker's revenue is `(a − w·x)/(1 − w·x) ≤ a`, so any
+withholding strategy loses. Simulation and formula agree within noise.
 
-### 2. Qiyinlik algoritmlari (1 birlik doimiy + 3 birlik hopper, 300 ming blok)
+**Difficulty under coin-hopping** (1 unit steady + 3 units hopping hash rate, 300k blocks, 120 s target):
 
-| Algoritm | O'rtacha blok | >10 daqiqalik bloklar | Eng yomon 100 blok | Hopper ustunligi |
-|---|---|---|---|---|
-| Bitcoin (2016 blok) | 204 s | 9.29% | 11.0 daq | 2.29x |
-| SMA-144 (BCH 2017) | 120 s | 1.01% | 2.9 daq | 1.08x |
-| ASERT 1 kun (Qalqon) | 120 s | 0.77% | 3.1 daq | 0.99x |
+| Algorithm | Mean block | Blocks > 10 min | Hopper advantage |
+|---|---|---|---|
+| Bitcoin 2016-block | 204 s | 9.29% | 2.29× |
+| SMA-144 (BCH 2017) | 120 s | 1.01% | 1.08× |
+| ASERT, 1-day halflife | 120 s | 0.77% | 0.99× |
 
-Ideal holatda >10 daqiqalik bloklar 0.67% bo'ladi. Bu modelda ASERT SMA-144 dan biroz yaxshi, Bitcoin davr qoidasidan esa keskin yaxshi.
+**Time-warp** (attacker mines every block for 30 days; honest result is 21,600 blocks):
+Bitcoin's retarget gives 5,000,000 blocks in 16.2 days; ASERT with FTL 360 s gives 21,569 (1.00×).
 
-### 3. Time-warp (hujumchi barcha bloklarni qazadi, 30 kun, halol holatda 21 600 blok)
+**Hash core** (Intel Core Ultra 7 265KF, 20 threads, interpreter, mainnet parameters):
+2,349 H/s. Full verification takes 5.8 ms, the prefilter 1.1 µs, and light verification (cache only) 91 ms.
+Recomputing a dataset item instead of storing it costs 128× a read.
 
-| Qoida | Natija |
+## Open problems (help wanted)
+
+1. **Oblivious shares × Stratum V2 Job Declaration.** When the miner chooses the template,
+   how does the pool secret bind to the job? (See Towns 2024 and the objections in [PRIOR_ART.md](PRIOR_ART.md).)
+2. **Malicious operator and FAW** under oblivious shares.
+3. **Decentralised pools** (P2Pool, Braidpool) with no single secret holder.
+4. **TMTO/pebbling analysis** of the cache and dataset construction.
+5. **Second implementation** (C or Rust) and differential fuzzing against the test vectors.
+6. **JIT** for the VM, followed by an independent hardware-cost estimate.
+
+## Layout
+
+| Path | Contents |
 |---|---|
-| Bitcoin 2016-blok + time-warp | 16.2 kunda 5 000 000 blok, qiyinlik ~0 ga tushadi |
-| ASERT, FTL=7200 s | 21 622 blok (1.00x) |
-| ASERT, FTL=360 s (Qalqon) | 21 569 blok (1.00x) |
+| `pow/params.go` | Mainnet and test parameters |
+| `pow/dataset.go` | Epoch cache (256 MiB, 3 data-dependent passes) and dataset (2 GiB, 32 chained parents) |
+| `pow/vm.go` | Random-program VM: 19 opcodes covering integer, FP, memory and branches |
+| `pow/hash.go` | Seed, hash, prefilter, share and block verification |
+| `pow/consensus.go` | Oblivious shares, ASERT, timestamp rules, fork choice, MMR |
+| `cmd/qalqon` | `vectors` and `bench` commands |
+| `cmd/sim` | Withholding, difficulty and time-warp simulations |
+| `testdata/` | Test vectors |
 
-## Topilgan kamchiliklar
+## Run
 
-1. **Light tekshiruv va light-eval jarimasi o'rtasidagi murosa.** v0.2 da light tekshiruv 91 ms, jarima 128x (`DATASET_PARENTS=32`). Jarima CPU'da o'lchangan, maxsus apparat uchun u boshqacha bo'lishi mumkin. Qaror TMTO tahlilidan keyin qabul qilinadi. To'liq node'lar va pool'lar 5.8 ms da tekshiradi.
-2. **Mining interpretatorda ishlaydi.** Tijorat miner uchun x86-64 JIT kerak.
-3. **Spetsifikatsiyadan chetlanishlar.** Kesh Argon2d emas, BLAKE3 bilan ROMix uslubida quriladi: Go'da Argon2d ichki xotirasi ochiq emas. AES-4R o'rniga to'liq AES-128-CTR ishlatiladi.
-4. **Hali qilinmagan:** TMTO/pebbling tahlili, ASIC-narx modeli, mustaqil audit, ikkinchi implementatsiya, Stratum V2 pool.
+```
+go test ./pow/ -v                          # 11 tests incl. test vectors
+go run ./cmd/sim                           # results/simulations.json
+go run ./cmd/qalqon bench -params mainnet  # needs ~2.5 GiB RAM
+go run ./cmd/qalqon vectors                # regenerate testdata/
+```
+
+Requires Go 1.27+.
+
+## Contributing and support
+
+Issues, reviews and attacks on the design are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md)
+and [SECURITY.md](SECURITY.md).
+
+## License
+
+MIT, see [LICENSE](LICENSE).
